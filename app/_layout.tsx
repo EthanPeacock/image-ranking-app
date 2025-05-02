@@ -1,6 +1,7 @@
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { MD3LightTheme as DefaultTheme, PaperProvider } from "react-native-paper";
 import "react-native-reanimated";
 
 export default function RootLayout() {
@@ -14,12 +15,19 @@ export default function RootLayout() {
 	}
 
 	return (
-		<>
-			<Stack>
-				<Stack.Screen name="index" options={{ headerShown: false }} />
+		<PaperProvider theme={DefaultTheme}>
+			<Stack screenOptions={{
+				headerTitleAlign: "center",
+				headerLargeTitle: true
+			}}>
+				<Stack.Screen name="index" />
+				<Stack.Screen name="view" />
+				<Stack.Screen name="manage" />
+				<Stack.Screen name="create" />
+				<Stack.Screen name="rank" />
 				<Stack.Screen name="+not-found" />
 			</Stack>
-			<StatusBar style="auto" />
-		</>
+			<StatusBar style="dark" />
+		</PaperProvider>
 	);
 }

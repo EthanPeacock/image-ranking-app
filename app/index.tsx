@@ -1,10 +1,11 @@
-import { Text } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Stack } from "expo-router";
+import { Text, View } from "react-native";
 
-export default function HomeScreen() {
+export default function MyAlbumsPage() {
 	return (
-		<SafeAreaView>
-			<Text>home page</Text>
-		</SafeAreaView>
+		<View>
+			<Stack.Screen options={{ title: "My Albums" }} />
+			<Text>index</Text>
+		</View>
 	);
 }
