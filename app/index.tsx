@@ -1,8 +1,9 @@
 import { Stack } from "expo-router";
-import { View } from "react-native";
+import { ScrollView } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
-import { Card, FAB, Text } from "react-native-paper";
+import { FAB } from "react-native-paper";
 import NoAlbums from "@/components/NoAlbums";
+import AlbumCard from "@/components/AlbumCard";
 
 export default function MyAlbumsPage() {
 	const insets = useSafeAreaInsets();
@@ -16,23 +17,16 @@ export default function MyAlbumsPage() {
 			
 			{/* <NoAlbums /> */}
 			
-			<View style={{ flex: 1, width: "90%" }}>
-				<Card mode="outlined" style={{ marginTop: 20 }}>
-					<Card.Cover source={{ uri: "https://picsum.photos/700" }} />
-					<Card.Content style={{ marginTop: 10 }}>
-						<View style={{ marginBottom: 8 }}>
-							<Text variant="titleLarge">album name</Text>
-							{/* the button to manage album here... */}
-						</View>
-						<Text variant="titleSmall" style={{ marginBottom: 10 }} numberOfLines={2}>album description will certinaly go here for sure for sure</Text>
-						<Text variant="bodySmall">15 Images</Text>
-					</Card.Content>
-				</Card>
-			</View>
+			<ScrollView style={{ flex: 1, width: "90%", marginTop: 20 }}>
+				<AlbumCard />
+				<AlbumCard />
+				<AlbumCard />
+				<AlbumCard />
+			</ScrollView>
 
 			<FAB
 				icon="plus"
-				style={{ position: "absolute", bottom: insets.bottom + 20, right: 32 }}
+				style={{ position: "absolute", bottom: insets.bottom + 20, right: "5%" }}
 				onPress={() => console.log("hello")}
 			/>
 		</SafeAreaView>
