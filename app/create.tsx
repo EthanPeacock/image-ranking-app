@@ -1,5 +1,5 @@
 import Entypo from "@expo/vector-icons/Entypo";
-import { Stack } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
 import {
@@ -18,6 +18,7 @@ export default function CreateAlbumPage() {
 	const DESCRIPTION_LENGTH = 100;
 
 	const theme = useTheme();
+	const router = useRouter();
 
 	const [error, setError] = useState<boolean>(false);
 	const [name, setName] = useState<string>();
@@ -46,6 +47,8 @@ export default function CreateAlbumPage() {
 
 		setError(false);
 		// TODO: handle creation and whatever
+
+		router.replace("/rank");
 	};
 
 	return (
