@@ -2,7 +2,14 @@ import Entypo from "@expo/vector-icons/Entypo";
 import { Stack } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
-import { Button, RadioButton, Text, TextInput, TouchableRipple, useTheme } from "react-native-paper";
+import {
+	Button,
+	RadioButton,
+	Text,
+	TextInput,
+	TouchableRipple,
+	useTheme
+} from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
 import ErrorPopup from "@/components/ErrorPopup";
 
@@ -68,11 +75,7 @@ export default function CreateAlbumPage() {
 					maxLength={DESCRIPTION_LENGTH}
 					value={description}
 					onChangeText={(value) => setDescription(value)}
-					right={
-						<TextInput.Affix
-							text={`${description?.length || 0}/${DESCRIPTION_LENGTH}`}
-						/>
-					}
+					right={<TextInput.Affix text={`${description?.length || 0}/${DESCRIPTION_LENGTH}`} />}
 				/>
 			</View>
 
@@ -80,7 +83,9 @@ export default function CreateAlbumPage() {
 				<Text variant="titleLarge" style={{ marginBottom: 12 }}>
 					Images
 				</Text>
-				<View style={{ backgroundColor: theme.colors.background, overflow: "hidden", borderRadius: 10 }}>
+				<View
+					style={{ backgroundColor: theme.colors.background, overflow: "hidden", borderRadius: 10 }}
+				>
 					<TouchableRipple onPress={selectImages}>
 						<View
 							style={{
@@ -89,7 +94,7 @@ export default function CreateAlbumPage() {
 								borderWidth: 1,
 								borderColor: theme.colors.outline,
 								flexDirection: "row",
-								alignItems: "center",
+								alignItems: "center"
 							}}
 						>
 							<Entypo name="images" size={42} color="gray" />
@@ -115,7 +120,7 @@ export default function CreateAlbumPage() {
 						backgroundColor: theme.colors.background,
 						borderRadius: 10,
 						borderWidth: 1,
-						borderColor: theme.colors.outline,
+						borderColor: theme.colors.outline
 					}}
 				>
 					<TouchableRipple onPress={() => setMethod("similarity")} style={{ marginBottom: 16 }}>
@@ -168,11 +173,7 @@ export default function CreateAlbumPage() {
 				</View>
 			</View>
 
-			<Button
-				mode="contained"
-				labelStyle={{ fontSize: 16 }}
-				onPress={handleSubmit}
-			>
+			<Button mode="contained" labelStyle={{ fontSize: 16 }} onPress={handleSubmit}>
 				Create Album
 			</Button>
 		</View>

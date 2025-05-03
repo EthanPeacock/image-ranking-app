@@ -13,7 +13,7 @@ export default function ErrorPopup({ message }: { message: string }) {
 				backgroundColor: theme.colors.errorContainer,
 				borderRadius: 10,
 				flexDirection: "row",
-				alignItems: "center",
+				alignItems: "center"
 			}}
 		>
 			<MaterialIcons name="error-outline" color={theme.colors.error} size={24} />

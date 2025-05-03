@@ -12,12 +12,12 @@ export default function MyAlbumsPage() {
 	return (
 		<SafeAreaView
 			style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
-			edges={['left', 'right', 'bottom']}
+			edges={["left", "right", "bottom"]}
 		>
 			<Stack.Screen options={{ title: "My Albums" }} />
-			
+
 			{/* <NoAlbums /> */}
-			
+
 			<ScrollView style={{ flex: 1, width: "90%", marginTop: 20 }}>
 				<AlbumCard />
 				<AlbumCard />

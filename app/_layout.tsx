@@ -16,10 +16,12 @@ export default function RootLayout() {
 
 	return (
 		<PaperProvider theme={DefaultTheme}>
-			<Stack screenOptions={{
-				headerTitleAlign: "center",
-				headerLargeTitle: true
-			}}>
+			<Stack
+				screenOptions={{
+					headerTitleAlign: "center",
+					headerLargeTitle: true
+				}}
+			>
 				<Stack.Screen name="index" />
 				<Stack.Screen name="view" />
 				<Stack.Screen name="manage" />
