@@ -1,12 +1,14 @@
+import { useRouter } from "expo-router";
 import { View } from "react-native";
 import { Card, Text, IconButton, useTheme, TouchableRipple } from "react-native-paper";
 
 export default function AlbumCard() {
 	const theme = useTheme();
+	const router = useRouter();
 
 	return (
 		<Card mode="outlined" style={{ marginBottom: 20 }}>
-			<TouchableRipple onPress={() => console.log("view")}>
+			<TouchableRipple onPress={() => router.navigate("/view")}>
 				<>
 					<Card.Cover source={{ uri: "https://picsum.photos/700" }} />
 					<Card.Content style={{ marginTop: 5 }}>
@@ -16,7 +18,7 @@ export default function AlbumCard() {
 								icon="circle-edit-outline"
 								iconColor={theme.colors.primary}
 								size={20}
-								onPress={() => console.log("edit")}
+								onPress={() => router.navigate("/manage")}
 								style={{ marginRight: -5 }}
 							/>
 						</View>

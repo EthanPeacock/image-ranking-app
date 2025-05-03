@@ -1,4 +1,4 @@
-import { Stack } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import { ScrollView } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { FAB } from "react-native-paper";
@@ -7,6 +7,7 @@ import AlbumCard from "@/components/AlbumCard";
 
 export default function MyAlbumsPage() {
 	const insets = useSafeAreaInsets();
+	const router = useRouter();
 
 	return (
 		<SafeAreaView
@@ -27,7 +28,7 @@ export default function MyAlbumsPage() {
 			<FAB
 				icon="plus"
 				style={{ position: "absolute", bottom: insets.bottom + 20, right: "5%" }}
-				onPress={() => console.log("hello")}
+				onPress={() => router.navigate("/create")}
 			/>
 		</SafeAreaView>
 	);
