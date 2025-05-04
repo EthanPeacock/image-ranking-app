@@ -11,9 +11,12 @@ export default function AlbumCard({ album }: { album: AlbumDetails }) {
 		<Card mode="outlined" style={{ marginBottom: 20 }}>
 			<TouchableRipple onPress={() => router.navigate("/view")}>
 				<>
-					<Card.Cover source={{
-						uri: album.thumbnail || require("@/assets/img-placeholder.jpg")
-					}} />
+					{album.thumbnail ? (
+						<Card.Cover source={{ uri: album.thumbnail }} />
+					) : (
+						<Card.Cover source={require("@/assets/img-placeholder.jpg")} />
+					)}
+
 					<Card.Content style={{ marginTop: 5 }}>
 						<View
 							style={{
