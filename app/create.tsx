@@ -27,7 +27,6 @@ export default function CreateAlbumPage() {
 	const [method, setMethod] = useState<"similarity" | "metadata">("similarity");
 
 	const selectImages = async () => {
-		console.log("test");
 		const result = await ImagePicker.launchImageLibraryAsync({
 			mediaTypes: ["images"],
 			aspect: [4, 3],
