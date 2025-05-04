@@ -12,6 +12,8 @@ import {
 } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
 import ErrorPopup from "@/components/ErrorPopup";
+import { createAlbum } from "@/utils/db";
+import { useSQLiteContext } from "expo-sqlite";
 
 export default function CreateAlbumPage() {
 	const NAME_LENGTH = 50;
@@ -19,6 +21,7 @@ export default function CreateAlbumPage() {
 
 	const theme = useTheme();
 	const router = useRouter();
+	const db = useSQLiteContext();
 
 	const [error, setError] = useState<boolean>(false);
 	const [name, setName] = useState<string>();
@@ -38,15 +41,20 @@ export default function CreateAlbumPage() {
 		}
 	};
 
-	const handleSubmit = () => {
+	const handleSubmit = async () => {
 		if (!name || !description || images.length === 0) {
 			setError(true);
 			return;
 		}
 
-		setError(false);
-		// TODO: handle creation and whatever
+		const created = await createAlbum(db, { name, description, images });
+		if (!created) {
+			setError(true);
+			return;
+		}
 
+		console.log("successfully created the album");
+		setError(false);
 		router.replace("/rank");
 	};
 

@@ -1,4 +1,4 @@
-import type { AlbumDetails } from "@/types/album";
+import type { AlbumDetails, CreateAlbum } from "@/types/album";
 import type { SQLiteDatabase } from "expo-sqlite";
 
 async function createTablesIfNeeded(db: SQLiteDatabase) {
@@ -52,4 +52,34 @@ async function getAlbums(db: SQLiteDatabase): Promise<AlbumDetails[]> {
 	return albums
 }
 
-export { createTablesIfNeeded, getAlbums };
+async function createAlbum(db: SQLiteDatabase, albumDetails: CreateAlbum): Promise<boolean> {
+	try {
+		await db.withTransactionAsync(async () => {
+			const createdAlbum = await db.runAsync("INSERT INTO album (name, description) VALUES (?, ?)", albumDetails.name, albumDetails.description);
+
+			const checkImgStatement = await db.prepareAsync("SELECT image_id AS imgId FROM image WHERE path = $path");
+			const imgStatement = await db.prepareAsync("INSERT INTO image (path) VALUES ($path)");
+			const albumImgStatement = await db.prepareAsync("INSERT INTO album_image (album_id, image_id) VALUES ($albumId, $imageId)");
+
+			for (const path of albumDetails.images) {
+				let imgId: number;
+				const img = await checkImgStatement.executeAsync<{ imgId: number }>({ $path: path });
+				const imgExists = await img.getFirstAsync();
+				if (!imgExists) {
+					const createdImg = await imgStatement.executeAsync({ $path: path });
+					imgId = createdImg.lastInsertRowId;
+				} else {
+					imgId = imgExists.imgId;
+				}
+
+				await albumImgStatement.executeAsync({ $albumId: createdAlbum.lastInsertRowId, $imageId: imgId });
+			}
+		});
+
+		return true;
+	} catch {
+		return false;
+	}
+}
+
+export { createTablesIfNeeded, getAlbums, createAlbum };

@@ -2,8 +2,14 @@ interface AlbumDetails {
 	id: number;
 	name: string;
 	description: string;
-	thumbnail: string;
+	thumbnail: string | null;
 	imgCount: number;
 }
 
-export type { AlbumDetails };
+interface CreateAlbum {
+	name: string;
+	description: string;
+	images: string[];
+}
+
+export type { AlbumDetails, CreateAlbum };
