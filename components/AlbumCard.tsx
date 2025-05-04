@@ -1,8 +1,9 @@
+import type { AlbumDetails } from "@/types/album";
 import { useRouter } from "expo-router";
 import { View } from "react-native";
 import { Card, Text, IconButton, useTheme, TouchableRipple } from "react-native-paper";
 
-export default function AlbumCard() {
+export default function AlbumCard({ album }: { album: AlbumDetails }) {
 	const theme = useTheme();
 	const router = useRouter();
 
@@ -20,7 +21,7 @@ export default function AlbumCard() {
 							}}
 						>
 							<Text variant="titleLarge" numberOfLines={1} style={{ width: "80%" }}>
-								Chchc jviviv ugig uguguvi vuvuvjvhv hvu vuvugu vugughv uva
+								{album.name}
 							</Text>
 							<IconButton
 								icon="circle-edit-outline"
@@ -31,10 +32,10 @@ export default function AlbumCard() {
 							/>
 						</View>
 						<Text variant="titleSmall" style={{ marginBottom: 10 }} numberOfLines={2}>
-							album description will certinaly go here for sure for sure
+							{album.description}
 						</Text>
 						<Text variant="bodySmall" style={{ marginBottom: 15 }}>
-							15 Images
+							{album.imgCount} Images
 						</Text>
 					</Card.Content>
 				</>

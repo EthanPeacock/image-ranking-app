@@ -1,3 +1,4 @@
+import type { AlbumDetails } from "@/types/album";
 import type { SQLiteDatabase } from "expo-sqlite";
 
 async function createTablesIfNeeded(db: SQLiteDatabase) {
@@ -38,4 +39,17 @@ async function createTablesIfNeeded(db: SQLiteDatabase) {
 	});
 }
 
-export { createTablesIfNeeded };
+async function getAlbums(db: SQLiteDatabase): Promise<AlbumDetails[]> {
+	const albums = await db.getAllAsync<AlbumDetails>(`
+		SELECT
+			album.album_id AS id, album.name, album.description, album.thumbnail,
+			COUNT(album_image.image_id) AS imgCount
+		FROM album
+		LEFT JOIN album_image ON album.album_id = album_image.album_id
+		GROUP BY album.album_id;
+	`);
+
+	return albums
+}
+
+export { createTablesIfNeeded, getAlbums };
