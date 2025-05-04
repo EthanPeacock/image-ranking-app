@@ -1,8 +1,11 @@
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { MD3LightTheme as DefaultTheme, PaperProvider } from "react-native-paper";
+import { Text, MD3LightTheme as DefaultTheme, PaperProvider } from "react-native-paper";
+import { SQLiteProvider } from "expo-sqlite";
 import "react-native-reanimated";
+import { Suspense } from "react";
+import { createTablesIfNeeded } from "@/utils/db";
 
 export default function RootLayout() {
 	const [loaded] = useFonts({
@@ -16,20 +19,24 @@ export default function RootLayout() {
 
 	return (
 		<PaperProvider theme={DefaultTheme}>
-			<Stack
-				screenOptions={{
-					headerTitleAlign: "center",
-					headerLargeTitle: true
-				}}
-			>
-				<Stack.Screen name="index" />
-				<Stack.Screen name="view" />
-				<Stack.Screen name="manage" />
-				<Stack.Screen name="create" />
-				<Stack.Screen name="rank" />
-				<Stack.Screen name="+not-found" />
-			</Stack>
-			<StatusBar style="dark" />
+			<Suspense fallback={<Text>Loading...</Text>}>
+				<SQLiteProvider databaseName="albums.db" onInit={createTablesIfNeeded} useSuspense>
+					<Stack
+						screenOptions={{
+							headerTitleAlign: "center",
+							headerLargeTitle: true
+						}}
+					>
+						<Stack.Screen name="index" />
+						<Stack.Screen name="view" />
+						<Stack.Screen name="manage" />
+						<Stack.Screen name="create" />
+						<Stack.Screen name="rank" />
+						<Stack.Screen name="+not-found" />
+					</Stack>
+					<StatusBar style="dark" />
+				</SQLiteProvider>
+			</Suspense>
 		</PaperProvider>
 	);
 }
