@@ -4,7 +4,7 @@ import { Text } from "react-native-paper";
 
 export default function NoAlbums() {
 	return (
-		<View style={{ marginTop: 300, alignItems: "center", justifyContent: "center" }}>
+		<View style={{ alignItems: "center", justifyContent: "center" }}>
 			<Entypo name="images" size={80} color="gray" />
 			<Text variant="titleLarge" style={{ marginTop: 10 }}>
 				No Albums
