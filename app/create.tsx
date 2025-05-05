@@ -14,6 +14,7 @@ import * as ImagePicker from "expo-image-picker";
 import ErrorPopup from "@/components/ErrorPopup";
 import { createAlbum } from "@/utils/db";
 import { useSQLiteContext } from "expo-sqlite";
+import type { SelectedImage } from "@/types/album";
 
 export default function CreateAlbumPage() {
 	const NAME_LENGTH = 50;
@@ -26,7 +27,7 @@ export default function CreateAlbumPage() {
 	const [error, setError] = useState<boolean>(false);
 	const [name, setName] = useState<string>();
 	const [description, setDescription] = useState<string>();
-	const [images, setImages] = useState<string[]>([]);
+	const [images, setImages] = useState<SelectedImage[]>([]);
 	const [method, setMethod] = useState<"similarity" | "metadata">("similarity");
 
 	const selectImages = async () => {
@@ -37,7 +38,14 @@ export default function CreateAlbumPage() {
 		});
 
 		if (!result.canceled) {
-			setImages(result.assets.map((asset) => asset.uri));
+			const selectedImages = result.assets.map((
+				asset
+			) => ({
+				filename: asset.fileName || "unknown",
+				path: asset.uri
+			}));
+
+			setImages(selectedImages);
 		}
 	};
 
@@ -53,7 +61,6 @@ export default function CreateAlbumPage() {
 			return;
 		}
 
-		console.log("successfully created the album");
 		setError(false);
 		router.replace("/rank");
 	};

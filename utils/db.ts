@@ -9,6 +9,7 @@ async function createTablesIfNeeded(db: SQLiteDatabase) {
 		await db.execAsync(`
 			CREATE TABLE IF NOT EXISTS image (
 				image_id INTEGER PRIMARY KEY AUTOINCREMENT,
+				filename TEXT NOT NULL UNIQUE,
 				path TEXT NOT NULL UNIQUE
 			);
 		`);
@@ -57,16 +58,16 @@ async function createAlbum(db: SQLiteDatabase, albumDetails: CreateAlbum): Promi
 		await db.withTransactionAsync(async () => {
 			const createdAlbum = await db.runAsync("INSERT INTO album (name, description) VALUES (?, ?)", albumDetails.name, albumDetails.description);
 
-			const checkImgStatement = await db.prepareAsync("SELECT image_id AS imgId FROM image WHERE path = $path");
-			const imgStatement = await db.prepareAsync("INSERT INTO image (path) VALUES ($path)");
+			const checkImgStatement = await db.prepareAsync("SELECT image_id AS imgId FROM image WHERE filename = $file");
+			const imgStatement = await db.prepareAsync("INSERT INTO image (path, filename) VALUES ($path, $file)");
 			const albumImgStatement = await db.prepareAsync("INSERT INTO album_image (album_id, image_id) VALUES ($albumId, $imageId)");
 
-			for (const path of albumDetails.images) {
+			for (const currImg of albumDetails.images) {
 				let imgId: number;
-				const img = await checkImgStatement.executeAsync<{ imgId: number }>({ $path: path });
+				const img = await checkImgStatement.executeAsync<{ imgId: number }>({ $file: currImg.filename });
 				const imgExists = await img.getFirstAsync();
 				if (!imgExists) {
-					const createdImg = await imgStatement.executeAsync({ $path: path });
+					const createdImg = await imgStatement.executeAsync({ $path: currImg.path, $file: currImg.filename });
 					imgId = createdImg.lastInsertRowId;
 				} else {
 					imgId = imgExists.imgId;
