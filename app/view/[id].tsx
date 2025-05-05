@@ -47,7 +47,14 @@ export default function ViewAlbumPage() {
 			style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
 			edges={["left", "right", "bottom"]}
 		>
-			<Stack.Screen options={{ title: name || "Loading..." }} />
+			<Stack.Screen
+				options={{
+					title: name || "Loading...",
+					headerRight: () => (
+						<IconButton icon="pencil" size={24} onPress={() => router.navigate(`/manage/${id}`)} />
+					)
+				}}
+			/>
 
 			{rankingError && (
 				<View style={{ alignItems: "center", justifyContent: "center", marginTop: -50 }}>
