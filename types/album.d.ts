@@ -24,4 +24,9 @@ interface AlbumImages {
 	Rank3: string[];
 }
 
-export type { AlbumDetails, CreateAlbum, UpdateAlbum, AlbumImages };
+interface ImageRanking {
+	imageId: number;
+	rank: number;
+}
+
+export type { AlbumDetails, CreateAlbum, UpdateAlbum, AlbumImages, ImageRanking };

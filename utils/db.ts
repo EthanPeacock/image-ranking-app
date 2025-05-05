@@ -1,4 +1,4 @@
-import type { AlbumDetails, AlbumImages, CreateAlbum, UpdateAlbum } from "@/types/album";
+import type { AlbumDetails, AlbumImages, CreateAlbum, ImageRanking, UpdateAlbum } from "@/types/album";
 import type { SQLiteDatabase } from "expo-sqlite";
 
 async function createTablesIfNeeded(db: SQLiteDatabase) {
@@ -132,4 +132,23 @@ async function getAlbumImages(db: SQLiteDatabase, albumId: number): Promise<Albu
 	return { Rank1: rank1Imgs, Rank2: rank2Imgs, Rank3: rank3Imgs };
 }
 
-export { createTablesIfNeeded, getAlbums, createAlbum, getAlbumDetails, updateAlbumDetails, getAlbumImages };
+async function updateImageRankings(db: SQLiteDatabase, albumId: number, rankings: ImageRanking[]) {
+	const statement = await db.prepareAsync("UPDATE album_image SET rank = $rank WHERE album_id = $albumId AND image_id = $imageId");
+	
+	await db.withTransactionAsync(async () => {
+		for (const ranking of rankings) {
+			await statement.executeAsync({ $rank: ranking.rank, $albumId: albumId, $imageId: ranking.imageId });
+		}
+	});
+}
+
+async function updateAlbumRanked(db: SQLiteDatabase, albumId: number, thumbnail: string) {
+	const date = new Date().toISOString().slice(0, 10);
+
+	await db.runAsync(
+		"UPDATE album SET date_ranked = $date, thumbnail = $thumbnail WHERE album_id = $albumId",
+		{ $date: date, $thumbnail: thumbnail, $albumId: albumId }
+	);
+}
+
+export { createTablesIfNeeded, getAlbums, createAlbum, getAlbumDetails, updateAlbumDetails, getAlbumImages, updateImageRankings, updateAlbumRanked };
