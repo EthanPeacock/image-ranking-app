@@ -1,21 +1,23 @@
 import RankCategory from "@/components/RankCategory";
-import { getAlbumDetails } from "@/utils/db";
+import type { AlbumImages } from "@/types/album";
+import { getAlbumDetails, getAlbumImages } from "@/utils/db";
+import { MaterialIcons } from "@expo/vector-icons";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
 import { useEffect, useState } from "react";
 import { Image, ScrollView, TouchableOpacity, View } from "react-native";
-import { Button, IconButton, Modal, Portal, TouchableRipple } from "react-native-paper";
+import { Button, IconButton, Modal, Portal, Text } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ViewAlbumPage() {
-	const CATEGORIES = [3, 2, 1];
-
 	const { id } = useLocalSearchParams<{ id: string }>();
 	const router = useRouter();
 	const db = useSQLiteContext();
 
+	const [rankingError, setRankingError] = useState<boolean>(false);
 	const [name, setName] = useState<string>();
-	const [img, setImg] = useState<string | null>(null);
+	const [imgs, setImgs] = useState<AlbumImages>();
+	const [enlargedImg, setEnlargedImg] = useState<string | null>(null);
 
 	// temp
 	const placeholderImage = require("@/assets/img-placeholder.jpg");
@@ -23,8 +25,17 @@ export default function ViewAlbumPage() {
 	const fetchAlbum = async () => {
 		const albumDetails = await getAlbumDetails(db, Number.parseInt(id));
 		if (!albumDetails) return;
-
+		
 		setName(albumDetails.name);
+		
+		const imgs = await getAlbumImages(db, Number.parseInt(id));
+		if (!imgs) return;
+		if (imgs.Rank1.length === 0 && imgs.Rank2.length === 0 && imgs.Rank3.length === 0) {
+			setRankingError(true);
+			return;
+		};
+
+		setImgs(imgs);
 	};
 
 	useEffect(() => {
@@ -36,54 +47,89 @@ export default function ViewAlbumPage() {
 			style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
 			edges={["left", "right", "bottom"]}
 		>
-			<ScrollView style={{ paddingTop: 24 }}>
-				<Stack.Screen
-					options={{
-						title: name || "Loading...",
-						headerRight: () => (
-							<IconButton icon="pencil" size={24} onPress={() => router.navigate(`/manage/${id}`)} />
-						)
-					}}
-				/>
+			{rankingError && (
+				<View style={{ alignItems: "center", justifyContent: "center", marginTop: -50 }}>
+					<MaterialIcons name="error-outline" size={72} color="black" />
+					<Text variant="titleLarge" style={{ marginTop: 8 }}>Ranking is incomplete.</Text>
+					<Button
+						mode="contained-tonal"
+						onPress={() => console.log("go rank")}
+						style={{ marginTop: 16 }}
+					>
+						Rank Now
+					</Button>
+				</View>
+			)}
 
-				{CATEGORIES.map((category) => (
-					<View key={category} style={{ marginBottom: 24 }}>
-						<RankCategory stars={category} />
-						<View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-							<View style={{ width: "33.3%", padding: 8 }}>
-								<TouchableOpacity onPress={() => setImg("test")}>
-									<Image
-										source={placeholderImage}
-										resizeMode="cover"
-										style={{ width: "100%", height: 200 }}
-									/>
-								</TouchableOpacity>
+			{imgs && (
+				<ScrollView style={{ paddingTop: 24 }}>
+					<Stack.Screen
+						options={{
+							title: name || "Loading...",
+							headerRight: () => (
+								<IconButton icon="pencil" size={24} onPress={() => router.navigate(`/manage/${id}`)} />
+							)
+						}}
+					/>
+
+					
+						<>
+							<View style={{ marginBottom: 24 }}>
+								<RankCategory stars={3} />
+								<View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+									{imgs?.Rank3.map((img) => (
+										<View key={img} style={{ width: "33.3%", padding: 8 }}>
+											<TouchableOpacity onPress={() => setEnlargedImg("test")}>
+												<Image
+													source={{ uri: img }}
+													resizeMode="cover"
+													style={{ width: "100%", height: 200 }}
+												/>
+											</TouchableOpacity>
+										</View>
+									))}
+								</View>
 							</View>
-							<View style={{ width: "33.3%", padding: 8 }}>
-								<TouchableOpacity onPress={() => setImg("test")}>
-									<Image
-										source={placeholderImage}
-										resizeMode="cover"
-										style={{ width: "100%", height: 200 }}
-									/>
-								</TouchableOpacity>
+
+							<View style={{ marginBottom: 24 }}>
+								<RankCategory stars={2} />
+								<View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+									{imgs?.Rank2.map((img) => (
+										<View key={img} style={{ width: "33.3%", padding: 8 }}>
+											<TouchableOpacity onPress={() => setEnlargedImg("test")}>
+												<Image
+													source={{ uri: img }}
+													resizeMode="cover"
+													style={{ width: "100%", height: 200 }}
+												/>
+											</TouchableOpacity>
+										</View>
+									))}
+								</View>
 							</View>
-							<View style={{ width: "33.3%", padding: 8 }}>
-								<TouchableOpacity onPress={() => setImg("test")}>
-									<Image
-										source={placeholderImage}
-										resizeMode="cover"
-										style={{ width: "100%", height: 200 }}
-									/>
-								</TouchableOpacity>
+
+							<View style={{ marginBottom: 24 }}>
+								<RankCategory stars={1} />
+								<View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+									{imgs?.Rank1.map((img) => (
+										<View key={img} style={{ width: "33.3%", padding: 8 }}>
+											<TouchableOpacity onPress={() => setEnlargedImg("test")}>
+												<Image
+													source={{ uri: img }}
+													resizeMode="cover"
+													style={{ width: "100%", height: 200 }}
+												/>
+											</TouchableOpacity>
+										</View>
+									))}
+								</View>
 							</View>
-						</View>
-					</View>
-				))}
-			</ScrollView>
+						</>
+				</ScrollView>
+			)}
 
 			<Portal>
-				<Modal visible={img !== null} dismissable={true} onDismiss={() => setImg(null)}>
+				<Modal visible={enlargedImg !== null} dismissable={true} onDismiss={() => setEnlargedImg(null)}>
 					<View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
 						<Image source={placeholderImage} resizeMode="contain" />
 					</View>

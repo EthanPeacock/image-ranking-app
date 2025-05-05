@@ -18,4 +18,10 @@ interface UpdateAlbum {
 	description: string;
 }
 
-export type { AlbumDetails, CreateAlbum, UpdateAlbum };
+interface AlbumImages {
+	Rank1: string[];
+	Rank2: string[];
+	Rank3: string[];
+}
+
+export type { AlbumDetails, CreateAlbum, UpdateAlbum, AlbumImages };

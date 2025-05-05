@@ -1,4 +1,4 @@
-import type { AlbumDetails, CreateAlbum, UpdateAlbum } from "@/types/album";
+import type { AlbumDetails, AlbumImages, CreateAlbum, UpdateAlbum } from "@/types/album";
 import type { SQLiteDatabase } from "expo-sqlite";
 
 async function createTablesIfNeeded(db: SQLiteDatabase) {
@@ -107,4 +107,29 @@ async function updateAlbumDetails(db: SQLiteDatabase, details: UpdateAlbum): Pro
 	}
 }
 
-export { createTablesIfNeeded, getAlbums, createAlbum, getAlbumDetails, updateAlbumDetails };
+async function getAlbumImages(db: SQLiteDatabase, albumId: number): Promise<AlbumImages> {
+	const rank1Imgs = await db.getAllAsync<string>(`
+		SELECT path
+		FROM image
+		INNER JOIN album_image ON image.image_id = album_image.image_id
+		WHERE album_image.album_id = $albumId AND album_image.rank = 1
+	`, { $albumId: albumId });
+
+	const rank2Imgs = await db.getAllAsync<string>(`
+		SELECT path
+		FROM image
+		INNER JOIN album_image ON image.image_id = album_image.image_id
+		WHERE album_image.album_id = $albumId AND album_image.rank = 2
+	`, { $albumId: albumId });
+
+	const rank3Imgs = await db.getAllAsync<string>(`
+		SELECT path
+		FROM image
+		INNER JOIN album_image ON image.image_id = album_image.image_id
+		WHERE album_image.album_id = $albumId AND album_image.rank = 3
+	`, { $albumId: albumId });
+
+	return { Rank1: rank1Imgs, Rank2: rank2Imgs, Rank3: rank3Imgs };
+}
+
+export { createTablesIfNeeded, getAlbums, createAlbum, getAlbumDetails, updateAlbumDetails, getAlbumImages };
