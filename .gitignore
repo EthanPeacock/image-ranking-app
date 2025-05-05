@@ -11,9 +11,12 @@ web-build/
 expo-env.d.ts
 /android/
 /ios/
+
+# Native Modules
 !modules/triplet-generation/android/
 !modules/triplet-generation/ios/
 modules/triplet-generation/android/.gradle
+modules/triplet-generation/android/local.properties
 
 # Native
 *.orig.*
