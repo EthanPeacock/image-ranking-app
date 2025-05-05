@@ -1,17 +1,18 @@
 import ErrorPopup from "@/components/ErrorPopup";
 import SuccessPopup from "@/components/SuccessPopup";
-import { getAlbumDetails, updateAlbumDetails } from "@/utils/db";
-import { Stack, useLocalSearchParams } from "expo-router";
+import { deleteAlbum, getAlbumDetails, updateAlbumDetails } from "@/utils/db";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
 import { useEffect, useState } from "react";
-import { View } from "react-native";
-import { Button, Text, TextInput } from "react-native-paper";
+import { Alert, View } from "react-native";
+import { Button, IconButton, Text, TextInput } from "react-native-paper";
 
 export default function ManageAlbumPage() {
 	const NAME_LENGTH = 50;
 	const DESCRIPTION_LENGTH = 100;
 
 	const db = useSQLiteContext();
+	const router = useRouter();
 	const { id } = useLocalSearchParams<{ id: string }>();
 
 	const [error, setError] = useState<boolean>(false);
@@ -46,13 +47,44 @@ export default function ManageAlbumPage() {
 		setDescription(albumDetails.description);
 	};
 
+	const handleDeletePress = () => {
+		Alert.alert(
+			"Delete Album",
+			"Are you sure you want to delete this album?",
+			[
+				{
+					text: "Cancel",
+					style: "cancel"
+				},
+				{
+					text: "Delete",
+					style: "destructive",
+					onPress: handleDelete
+				}
+			]
+		)
+	};
+
+	const handleDelete = async () => {
+		await deleteAlbum(db, Number.parseInt(id));
+
+		router.dismissAll();
+	};
+
 	useEffect(() => {
 		fetchAlbum();
 	}, [])
 
 	return (
 		<View style={{ padding: 24, flex: 1 }}>
-			<Stack.Screen options={{ title: "Manage Album" }} />
+			<Stack.Screen
+				options={{
+					title: "Manage Album",
+					headerRight: () => (
+						<IconButton icon="delete" size={24} onPress={handleDeletePress} />
+					)
+				}}
+			/>
 
 			{error && <ErrorPopup message="Ensure all fields are provided." />}
 			{success && <SuccessPopup message="Album details updated successfully." />}

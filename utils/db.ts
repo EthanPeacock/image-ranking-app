@@ -151,4 +151,12 @@ async function updateAlbumRanked(db: SQLiteDatabase, albumId: number, thumbnail:
 	);
 }
 
-export { createTablesIfNeeded, getAlbums, createAlbum, getAlbumDetails, updateAlbumDetails, getAlbumImages, updateImageRankings, updateAlbumRanked };
+async function deleteAlbum(db: SQLiteDatabase, albumId: number) {
+	await db.withTransactionAsync(async () => {
+		await db.runAsync("DELETE FROM album_image WHERE album_id = $albumId", { $albumId: albumId });
+
+		await db.runAsync("DELETE FROM album WHERE album_id = $albumId", { $albumId: albumId });
+	});
+}
+
+export { createTablesIfNeeded, getAlbums, createAlbum, getAlbumDetails, updateAlbumDetails, getAlbumImages, updateImageRankings, updateAlbumRanked, deleteAlbum };
