@@ -1,6 +1,8 @@
 import RankCategory from "@/components/RankCategory";
-import { Stack, useRouter } from "expo-router";
-import { useState } from "react";
+import { getAlbumDetails } from "@/utils/db";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
+import { useSQLiteContext } from "expo-sqlite";
+import { useEffect, useState } from "react";
 import { Image, ScrollView, TouchableOpacity, View } from "react-native";
 import { Button, IconButton, Modal, Portal, TouchableRipple } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -8,12 +10,26 @@ import { SafeAreaView } from "react-native-safe-area-context";
 export default function ViewAlbumPage() {
 	const CATEGORIES = [3, 2, 1];
 
+	const { id } = useLocalSearchParams<{ id: string }>();
 	const router = useRouter();
+	const db = useSQLiteContext();
 
+	const [name, setName] = useState<string>();
 	const [img, setImg] = useState<string | null>(null);
 
 	// temp
 	const placeholderImage = require("@/assets/img-placeholder.jpg");
+
+	const fetchAlbum = async () => {
+		const albumDetails = await getAlbumDetails(db, Number.parseInt(id));
+		if (!albumDetails) return;
+
+		setName(albumDetails.name);
+	};
+
+	useEffect(() => {
+		fetchAlbum();
+	}, []);
 
 	return (
 		<SafeAreaView
@@ -23,9 +39,9 @@ export default function ViewAlbumPage() {
 			<ScrollView style={{ paddingTop: 24 }}>
 				<Stack.Screen
 					options={{
-						title: "Album Name Here",
+						title: name || "Loading...",
 						headerRight: () => (
-							<IconButton icon="pencil" size={24} onPress={() => router.navigate("/manage")} />
+							<IconButton icon="pencil" size={24} onPress={() => router.navigate(`/manage/${id}`)} />
 						)
 					}}
 				/>

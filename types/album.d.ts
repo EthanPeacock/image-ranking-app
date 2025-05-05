@@ -12,4 +12,10 @@ interface CreateAlbum {
 	images: string[];
 }
 
-export type { AlbumDetails, CreateAlbum };
+interface UpdateAlbum {
+	id: number;
+	name: string;
+	description: string;
+}
+
+export type { AlbumDetails, CreateAlbum, UpdateAlbum };

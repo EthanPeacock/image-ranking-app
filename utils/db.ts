@@ -1,4 +1,4 @@
-import type { AlbumDetails, CreateAlbum } from "@/types/album";
+import type { AlbumDetails, CreateAlbum, UpdateAlbum } from "@/types/album";
 import type { SQLiteDatabase } from "expo-sqlite";
 
 async function createTablesIfNeeded(db: SQLiteDatabase) {
@@ -82,4 +82,29 @@ async function createAlbum(db: SQLiteDatabase, albumDetails: CreateAlbum): Promi
 	}
 }
 
-export { createTablesIfNeeded, getAlbums, createAlbum };
+async function getAlbumDetails(db: SQLiteDatabase, albumId: number): Promise<AlbumDetails | null> {
+	const album = await db.getFirstAsync<AlbumDetails>(`
+		SELECT
+			album.album_id AS id, album.name, album.description
+		FROM album
+		WHERE album.album_id = $id;
+	`, { $id: albumId });
+
+	return album;
+}
+
+async function updateAlbumDetails(db: SQLiteDatabase, details: UpdateAlbum): Promise<boolean> {
+	try {
+		const updated = await db.runAsync(
+			"UPDATE album SET name = $name, description = $description WHERE album_id = $id",
+			{ $name: details.name, $description: details.description, $id: details.id }
+		);
+
+		if (updated.changes === 0) return false;
+		return true;
+	} catch {
+		return false;
+	}
+}
+
+export { createTablesIfNeeded, getAlbums, createAlbum, getAlbumDetails, updateAlbumDetails };

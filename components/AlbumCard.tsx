@@ -9,7 +9,7 @@ export default function AlbumCard({ album }: { album: AlbumDetails }) {
 
 	return (
 		<Card mode="outlined" style={{ marginBottom: 20 }}>
-			<TouchableRipple onPress={() => router.navigate("/view")}>
+			<TouchableRipple onPress={() => router.navigate(`/view/${album.id}`)}>
 				<>
 					{album.thumbnail ? (
 						<Card.Cover source={{ uri: album.thumbnail }} />
@@ -32,7 +32,7 @@ export default function AlbumCard({ album }: { album: AlbumDetails }) {
 								icon="circle-edit-outline"
 								iconColor={theme.colors.primary}
 								size={20}
-								onPress={() => router.navigate("/manage")}
+								onPress={() => router.navigate(`/manage/${album.id}`)}
 								style={{ marginRight: -5 }}
 							/>
 						</View>

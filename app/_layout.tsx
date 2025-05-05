@@ -28,8 +28,8 @@ export default function RootLayout() {
 						}}
 					>
 						<Stack.Screen name="index" />
-						<Stack.Screen name="view" />
-						<Stack.Screen name="manage" />
+						<Stack.Screen name="view/[id]" />
+						<Stack.Screen name="manage/[id]" />
 						<Stack.Screen name="create" />
 						<Stack.Screen name="rank" />
 						<Stack.Screen name="+not-found" />
