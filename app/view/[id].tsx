@@ -47,6 +47,8 @@ export default function ViewAlbumPage() {
 			style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
 			edges={["left", "right", "bottom"]}
 		>
+			<Stack.Screen options={{ title: name || "Loading..." }} />
+
 			{rankingError && (
 				<View style={{ alignItems: "center", justifyContent: "center", marginTop: -50 }}>
 					<MaterialIcons name="error-outline" size={72} color="black" />
