@@ -21,5 +21,17 @@ class TripletGenerationModule : Module() {
 
       return@Function triplets
     }
+
+    Function("metadata") { imgPaths: List<String> ->
+      // try get the current context. if null, throw an exception
+      val currContext = appContext.reactContext ?: throw Exception("No context available")
+
+      // convert the image uri strings to android uris
+      val imgs: List<Uri> = imgPaths.map { pathString -> pathString.toUri() }
+
+      val triplets = generateMetadataTriplets(currContext, imgs)
+
+      return@Function triplets
+    }
   }
 }
