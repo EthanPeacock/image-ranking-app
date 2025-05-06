@@ -53,8 +53,10 @@ async function getAlbums(db: SQLiteDatabase): Promise<AlbumDetails[]> {
 	return albums
 }
 
-async function createAlbum(db: SQLiteDatabase, albumDetails: CreateAlbum): Promise<boolean> {
+async function createAlbum(db: SQLiteDatabase, albumDetails: CreateAlbum): Promise<number | null> {
 	try {
+		let newAlbumId: number | null = null;
+		
 		await db.withTransactionAsync(async () => {
 			const createdAlbum = await db.runAsync("INSERT INTO album (name, description) VALUES (?, ?)", albumDetails.name, albumDetails.description);
 
@@ -75,11 +77,13 @@ async function createAlbum(db: SQLiteDatabase, albumDetails: CreateAlbum): Promi
 
 				await albumImgStatement.executeAsync({ $albumId: createdAlbum.lastInsertRowId, $imageId: imgId });
 			}
+
+			newAlbumId = createdAlbum.lastInsertRowId;
 		});
 
-		return true;
+		return newAlbumId;
 	} catch {
-		return false;
+		return null;
 	}
 }
 
