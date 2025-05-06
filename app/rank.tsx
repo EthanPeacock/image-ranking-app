@@ -1,5 +1,5 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { Stack } from "expo-router";
+import { Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { Dimensions, Image, TouchableOpacity, View } from "react-native";
 import { Text, ActivityIndicator, Portal, Modal } from "react-native-paper";
@@ -12,11 +12,24 @@ import Animated, {
 	runOnJS,
 	Extrapolation
 } from "react-native-reanimated";
+import useRankingTriplets from "@/hooks/useRankingTriplets";
+
+type RankScreenParams = {
+	albumId: string;
+	method: "similarity" | "metadata";
+	images: string;
+}
 
 type IconNames = "thumbs-o-up" | "thumbs-o-down" | "thumbs-up" | "thumbs-down";
 
 export default function RankingPage() {
-	const [loading, setLoading] = useState<boolean>(false);
+	const params = useLocalSearchParams<RankScreenParams>();
+	const { loading, triplets, currTriplet, swiped, setSwiped } = useRankingTriplets(
+		Number.parseInt(params.albumId),
+		JSON.parse(params.images),
+		params.method
+	);
+
 	const [leftIcon, setLeftIcon] = useState<IconNames>("thumbs-o-down");
 	const [rightIcon, setRightIcon] = useState<IconNames>("thumbs-o-up");
 	const [enlargeImg, setEnlargeImg] = useState<string | null>(null);
@@ -27,13 +40,17 @@ export default function RankingPage() {
 	const translateX = useSharedValue(0);
 	const rotateZ = useSharedValue(0);
 	const opacity = useSharedValue(1);
-
-	// temp
 	const placeholderImage = require("@/assets/img-placeholder.jpg");
 
 	const handleSwipeComplete = (isRightSwipe: boolean) => {
 		console.log(isRightSwipe ? "Swiped Right (Like)" : "Swiped Left (Dislike)");
-		resetCardPosition(false);
+		
+		if (swiped) {
+			resetCardPosition(true);
+		} else {
+			resetCardPosition(false);
+			setSwiped(true);
+		}
 	};
 
 	const resetCardPosition = (animated = true) => {
@@ -138,7 +155,11 @@ export default function RankingPage() {
 								}
 							]}
 						>
-							<Image source={placeholderImage} resizeMode="contain" style={{ width: "100%" }} />
+							<Image
+								source={swiped ? placeholderImage : { uri: triplets[currTriplet][0] }}
+								resizeMode="contain"
+								style={{ width: "100%", height: 400 }}
+							/>
 						</Animated.View>
 					</GestureDetector>
 
@@ -150,43 +171,57 @@ export default function RankingPage() {
 					/>
 				</View>
 
-				<Text variant="titleLarge" style={{ marginBottom: 24 }}>
+				<Text variant="titleLarge" style={{ marginVertical: 24 }}>
 					Compared To
 				</Text>
 
 				<View style={{ flexDirection: "row", flexWrap: "wrap" }}>
 					<View style={{ width: "50%", padding: 8 }}>
-						<TouchableOpacity onPress={() => setEnlargeImg("test")}>
+						<TouchableOpacity onPress={() => setEnlargeImg(triplets[currTriplet][1])}>
 							<Image
-								source={placeholderImage}
+								source={swiped ? placeholderImage : { uri: triplets[currTriplet][1] }}
 								resizeMode="cover"
 								style={{ width: "100%", height: 200 }}
 							/>
 						</TouchableOpacity>
 					</View>
 					<View style={{ width: "50%", padding: 8 }}>
-						<TouchableOpacity onPress={() => setEnlargeImg("test")}>
+						{!swiped && triplets[currTriplet].length === 3 ? (
+							<TouchableOpacity onPress={() => setEnlargeImg(triplets[currTriplet][2])}>
+								<Image
+									source={{ uri: triplets[currTriplet][2] }}
+									resizeMode="cover"
+									style={{ width: "100%", height: 200 }}
+								/>
+							</TouchableOpacity>
+						) : (
 							<Image
 								source={placeholderImage}
 								resizeMode="cover"
 								style={{ width: "100%", height: 200 }}
 							/>
-						</TouchableOpacity>
+						)}
 					</View>
 				</View>
 			</View>
 
-			<Portal>
-				<Modal
-					visible={enlargeImg !== null}
-					dismissable={true}
-					onDismiss={() => setEnlargeImg(null)}
-				>
-					<View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-						<Image source={placeholderImage} resizeMode="contain" />
-					</View>
-				</Modal>
-			</Portal>
+			{enlargeImg !== null &&
+				<Portal>
+					<Modal
+						visible={true}
+						dismissable={true}
+						onDismiss={() => setEnlargeImg(null)}
+					>
+						<View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+							<Image
+								source={swiped ? placeholderImage : { uri: enlargeImg }}
+								style={{ width: "100%", height: 500 }}
+								resizeMode="contain"
+							/>
+						</View>
+					</Modal>
+				</Portal>
+			}
 		</GestureHandlerRootView>
 	);
 }
