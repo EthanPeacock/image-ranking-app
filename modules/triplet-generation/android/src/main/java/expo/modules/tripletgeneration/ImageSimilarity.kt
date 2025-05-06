@@ -22,8 +22,8 @@ fun generateSimilarityTriplets(context: Context, imgs: List<Uri>): List<List<Uri
     val featureVectors = getFeatureVectors(context, model, imgs)
     Log.d("triplet-gen", "Feature vectors generated")
 
-    var remainingImgs = imgs.toMutableList()
-    var triplets = mutableListOf<List<Uri>>()
+    val remainingImgs = imgs.toMutableList()
+    val triplets = mutableListOf<List<Uri>>()
 
     while (remainingImgs.size > 0) {
         val img1 = remainingImgs.removeAt(0)
@@ -36,13 +36,16 @@ fun generateSimilarityTriplets(context: Context, imgs: List<Uri>): List<List<Uri
             similarities[img2] = similarity
         }
 
-        val sortedSimilarities = similarities.toList().sortedByDescending { (_, value) -> value }.toMap()
-        val img2 = sortedSimilarities.keys.first()
-        val img3 = sortedSimilarities.keys.elementAt(1)
+        val newTriplet: MutableList<Uri> = mutableListOf(img1)
 
-        triplets.add(listOf(img1, img2, img3))
-        remainingImgs.remove(img2)
-        remainingImgs.remove(img3)
+        val sortedSimilarities = similarities.toList().sortedByDescending { (_, value) -> value }.toMap()
+        newTriplet += sortedSimilarities.keys.first()
+        if (sortedSimilarities.size != 3 && sortedSimilarities.size != 1) {
+            newTriplet += sortedSimilarities.keys.elementAt(1)
+        }
+
+        triplets.add(newTriplet)
+        remainingImgs.removeAll(newTriplet)
 
         Log.d("triplet-gen", "triplet created")
         Log.d("triplet-gen", triplets.toString())
@@ -72,12 +75,12 @@ private fun loadModel(context: Context): Interpreter? {
         val interpreter = Interpreter(modelByteBuffer)
         return interpreter
     } catch (e: Exception) {
-        return null;
+        return null
     }
 }
 
 private fun getFeatureVectors(context: Context, model: Interpreter, imgs: List<Uri>): MutableMap<Uri, FloatArray> {
-    var imgFeatureVectors: MutableMap<Uri, FloatArray> = mutableMapOf()
+    val imgFeatureVectors: MutableMap<Uri, FloatArray> = mutableMapOf()
 
     for (img in imgs) {
         // get the image bitmap using uri

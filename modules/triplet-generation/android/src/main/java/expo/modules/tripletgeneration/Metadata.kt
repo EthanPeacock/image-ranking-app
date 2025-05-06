@@ -14,19 +14,34 @@ fun generateMetadataTriplets(context: Context, imgs: List<Uri>): List<List<Uri>>
 
     var triplets = mutableListOf<List<Uri>>()
 
-    for (i in 0 until imgs.size step 3) {
+    var subtract = false
+    for (i in imgs.indices step 3) {
         Log.d("triplet-gen", "imgs $i to ${i + 2}")
 
-        val img1 = sortedImgDates.keys.elementAt(i)
-        val img2 = sortedImgDates.keys.elementAt(i + 1)
-        val img3 = sortedImgDates.keys.elementAt(i + 2)
+        var index = i
+        if (subtract) {
+            index -= 1
+        }
+
+        val img1 = sortedImgDates.keys.elementAt(index)
+        val img2 = sortedImgDates.keys.elementAt(index + 1)
 
         Log.d("triplet-gen", "pairing the below images")
         Log.d("triplet-gen", sortedImgDates[img1].toString())
         Log.d("triplet-gen", sortedImgDates[img2].toString())
-        Log.d("triplet-gen", sortedImgDates[img3].toString())
 
-        triplets.add(listOf(img1, img2, img3))
+        var newTriplet: List<Uri> = listOf()
+        if ((imgs.size - i) == 4 || (imgs.size - i) == 2) {
+            newTriplet = listOf(img1, img2)
+            subtract = true
+        } else {
+            val img3 = sortedImgDates.keys.elementAt(index + 2)
+            newTriplet = listOf(img1, img2, img3)
+
+            Log.d("triplet-gen", sortedImgDates[img3].toString())
+        }
+
+        triplets.add(newTriplet)
     }
 
     return triplets
