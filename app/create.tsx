@@ -62,7 +62,14 @@ export default function CreateAlbumPage() {
 		}
 
 		setError(false);
-		router.replace("/rank");
+		router.replace({
+			pathname: "/rank",
+			params: {
+				albumId: created,
+				method: method,
+				images: JSON.stringify(images.map((image) => image.path))
+			}
+		});
 	};
 
 	return (
