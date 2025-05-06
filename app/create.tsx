@@ -152,9 +152,13 @@ export default function CreateAlbumPage() {
 								borderColor: theme.colors.outline
 							}}
 						>
-							<View>
-								<Text variant="titleMedium">Similarity</Text>
-								<Text variant="titleSmall">Group similar images</Text>
+							<View style={{ width: "80%" }}>
+								<Text variant="titleMedium">
+									Image Similarity
+								</Text>
+								<Text variant="labelLarge" style={{ opacity: 0.5 }}>
+									Best for smaller collections
+								</Text>
 							</View>
 							<RadioButton
 								value="similarity"
@@ -176,9 +180,13 @@ export default function CreateAlbumPage() {
 								borderColor: theme.colors.outline
 							}}
 						>
-							<View>
-								<Text variant="titleMedium">Metadata</Text>
-								<Text variant="titleSmall">Group images taken at similar times</Text>
+							<View style={{ width: "80%" }}>
+								<Text variant="titleMedium">
+									Image Date & Time
+								</Text>
+								<Text variant="labelLarge" style={{ opacity: 0.5 }}>
+									Best for larger collections
+								</Text>
 							</View>
 							<RadioButton
 								value="metadata"
