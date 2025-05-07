@@ -17,6 +17,11 @@ interface CreateAlbum {
 	images: SelectedImages[];
 }
 
+interface AlbumCreated {
+	albumId: number;
+	imgPaths: string[];
+}
+
 interface UpdateAlbum {
 	id: number;
 	name: string;
@@ -30,8 +35,8 @@ interface AlbumImages {
 }
 
 interface ImageRanking {
-	imageId: number;
+	path: string;
 	rank: number;
 }
 
-export type { AlbumDetails, SelectedImage, CreateAlbum, UpdateAlbum, AlbumImages, ImageRanking };
+export type { AlbumDetails, SelectedImage, CreateAlbum, AlbumCreated, UpdateAlbum, AlbumImages, ImageRanking };

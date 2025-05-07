@@ -82,68 +82,72 @@ export default function ViewAlbumPage() {
 					/>
 
 					
-						<>
-							<View style={{ marginBottom: 24 }}>
-								<RankCategory stars={3} />
-								<View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-									{imgs?.Rank3.map((img) => (
-										<View key={img} style={{ width: "33.3%", padding: 8 }}>
-											<TouchableOpacity onPress={() => setEnlargedImg("test")}>
-												<Image
-													source={{ uri: img }}
-													resizeMode="cover"
-													style={{ width: "100%", height: 200 }}
-												/>
-											</TouchableOpacity>
-										</View>
-									))}
+					<View style={{ marginBottom: 24 }}>
+						<RankCategory stars={3} />
+						<View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+							{imgs?.Rank3.map((img) => (
+								<View key={img} style={{ width: "33.3%", padding: 8 }}>
+									<TouchableOpacity onPress={() => setEnlargedImg(img)}>
+										<Image
+											source={{ uri: img }}
+											resizeMode="cover"
+											style={{ width: "100%", height: 200 }}
+										/>
+									</TouchableOpacity>
 								</View>
-							</View>
+							))}
+						</View>
+					</View>
 
-							<View style={{ marginBottom: 24 }}>
-								<RankCategory stars={2} />
-								<View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-									{imgs?.Rank2.map((img) => (
-										<View key={img} style={{ width: "33.3%", padding: 8 }}>
-											<TouchableOpacity onPress={() => setEnlargedImg("test")}>
-												<Image
-													source={{ uri: img }}
-													resizeMode="cover"
-													style={{ width: "100%", height: 200 }}
-												/>
-											</TouchableOpacity>
-										</View>
-									))}
+					<View style={{ marginBottom: 24 }}>
+						<RankCategory stars={2} />
+						<View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+							{imgs?.Rank2.map((img) => (
+								<View key={img} style={{ width: "33.3%", padding: 8 }}>
+									<TouchableOpacity onPress={() => setEnlargedImg(img)}>
+										<Image
+											source={{ uri: img }}
+											resizeMode="cover"
+											style={{ width: "100%", height: 200 }}
+										/>
+									</TouchableOpacity>
 								</View>
-							</View>
+							))}
+						</View>
+					</View>
 
-							<View style={{ marginBottom: 24 }}>
-								<RankCategory stars={1} />
-								<View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-									{imgs?.Rank1.map((img) => (
-										<View key={img} style={{ width: "33.3%", padding: 8 }}>
-											<TouchableOpacity onPress={() => setEnlargedImg("test")}>
-												<Image
-													source={{ uri: img }}
-													resizeMode="cover"
-													style={{ width: "100%", height: 200 }}
-												/>
-											</TouchableOpacity>
-										</View>
-									))}
+					<View style={{ marginBottom: 48 }}>
+						<RankCategory stars={1} />
+						<View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+							{imgs?.Rank1.map((img) => (
+								<View key={img} style={{ width: "33.3%", padding: 8 }}>
+									<TouchableOpacity onPress={() => setEnlargedImg(img)}>
+										<Image
+											source={{ uri: img }}
+											resizeMode="cover"
+											style={{ width: "100%", height: 200 }}
+										/>
+									</TouchableOpacity>
 								</View>
-							</View>
-						</>
+							))}
+						</View>
+					</View>
 				</ScrollView>
 			)}
 
-			<Portal>
-				<Modal visible={enlargedImg !== null} dismissable={true} onDismiss={() => setEnlargedImg(null)}>
-					<View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-						<Image source={placeholderImage} resizeMode="contain" />
-					</View>
-				</Modal>
-			</Portal>
+			{enlargedImg !== null &&
+				<Portal>
+					<Modal visible={true} dismissable={true} onDismiss={() => setEnlargedImg(null)}>
+						<View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+							<Image
+								source={{ uri: enlargedImg }}
+								style={{ width: "100%", height: 500 }}
+								resizeMode="contain"
+							/>
+						</View>
+					</Modal>
+				</Portal>
+			}
 		</SafeAreaView>
 	);
 }

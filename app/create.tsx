@@ -65,9 +65,9 @@ export default function CreateAlbumPage() {
 		router.replace({
 			pathname: "/rank",
 			params: {
-				albumId: created,
+				albumId: created.albumId,
 				method: method,
-				images: JSON.stringify(images.map((image) => image.path))
+				images: JSON.stringify(created.imgPaths)
 			}
 		});
 	};

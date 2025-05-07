@@ -24,7 +24,7 @@ type IconNames = "thumbs-o-up" | "thumbs-o-down" | "thumbs-up" | "thumbs-down";
 
 export default function RankingPage() {
 	const params = useLocalSearchParams<RankScreenParams>();
-	const { loading, triplets, currTriplet, swiped, setSwiped } = useRankingTriplets(
+	const { loading, triplets, round, currTriplet, swiped, setSwiped, rating } = useRankingTriplets(
 		Number.parseInt(params.albumId),
 		JSON.parse(params.images),
 		params.method
@@ -43,12 +43,13 @@ export default function RankingPage() {
 	const placeholderImage = require("@/assets/img-placeholder.jpg");
 
 	const handleSwipeComplete = (isRightSwipe: boolean) => {
-		console.log(isRightSwipe ? "Swiped Right (Like)" : "Swiped Left (Dislike)");
-		
 		if (swiped) {
+			// the UI is currently updating from a previous swipe
+			// therefore, just ignore the current swipe and reset it
 			resetCardPosition(true);
 		} else {
 			resetCardPosition(false);
+			rating.current = isRightSwipe ? "like" : "dislike";
 			setSwiped(true);
 		}
 	};
@@ -119,7 +120,7 @@ export default function RankingPage() {
 				<View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
 					<ActivityIndicator size="large" />
 					<Text variant="titleMedium" style={{ marginTop: 16 }}>
-						Generating Triplets...
+						{round.current === 2 ? "Updating Scores..." : "Generating Triplets..."}
 					</Text>
 				</View>
 			</>
@@ -156,7 +157,7 @@ export default function RankingPage() {
 							]}
 						>
 							<Image
-								source={swiped ? placeholderImage : { uri: triplets[currTriplet][0] }}
+								source={swiped ? placeholderImage : { uri: triplets.current[currTriplet][0] }}
 								resizeMode="contain"
 								style={{ width: "100%", height: 400 }}
 							/>
@@ -177,19 +178,19 @@ export default function RankingPage() {
 
 				<View style={{ flexDirection: "row", flexWrap: "wrap" }}>
 					<View style={{ width: "50%", padding: 8 }}>
-						<TouchableOpacity onPress={() => setEnlargeImg(triplets[currTriplet][1])}>
+						<TouchableOpacity onPress={() => setEnlargeImg(triplets.current[currTriplet][1])}>
 							<Image
-								source={swiped ? placeholderImage : { uri: triplets[currTriplet][1] }}
+								source={swiped ? placeholderImage : { uri: triplets.current[currTriplet][1] }}
 								resizeMode="cover"
 								style={{ width: "100%", height: 200 }}
 							/>
 						</TouchableOpacity>
 					</View>
 					<View style={{ width: "50%", padding: 8 }}>
-						{!swiped && triplets[currTriplet].length === 3 ? (
-							<TouchableOpacity onPress={() => setEnlargeImg(triplets[currTriplet][2])}>
+						{!swiped && triplets.current[currTriplet].length === 3 ? (
+							<TouchableOpacity onPress={() => setEnlargeImg(triplets.current[currTriplet][2])}>
 								<Image
-									source={{ uri: triplets[currTriplet][2] }}
+									source={{ uri: triplets.current[currTriplet][2] }}
 									resizeMode="cover"
 									style={{ width: "100%", height: 200 }}
 								/>
