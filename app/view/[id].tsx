@@ -102,7 +102,7 @@ export default function ViewAlbumPage() {
 										<Image
 											source={{ uri: img }}
 											resizeMode="cover"
-											style={{ width: "100%", height: 200 }}
+											style={{ width: "100%", height: 150 }}
 										/>
 									</TouchableOpacity>
 								</View>
@@ -119,7 +119,7 @@ export default function ViewAlbumPage() {
 										<Image
 											source={{ uri: img }}
 											resizeMode="cover"
-											style={{ width: "100%", height: 200 }}
+											style={{ width: "100%", height: 150 }}
 										/>
 									</TouchableOpacity>
 								</View>
@@ -136,7 +136,7 @@ export default function ViewAlbumPage() {
 										<Image
 											source={{ uri: img }}
 											resizeMode="cover"
-											style={{ width: "100%", height: 200 }}
+											style={{ width: "100%", height: 150 }}
 										/>
 									</TouchableOpacity>
 								</View>
