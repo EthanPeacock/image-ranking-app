@@ -1,4 +1,4 @@
-import type { AlbumCreated, AlbumDetails, AlbumImages, CreateAlbum, ImageRanking, UpdateAlbum } from "@/types/album";
+import type { AlbumCreated, AlbumDetails, AlbumImages, CreateAlbum, ImageRanking, ReRankAlbum, UpdateAlbum } from "@/types/album";
 import type { SQLiteDatabase } from "expo-sqlite";
 
 async function createTablesIfNeeded(db: SQLiteDatabase) {
@@ -96,7 +96,7 @@ async function createAlbum(db: SQLiteDatabase, albumDetails: CreateAlbum): Promi
 async function getAlbumDetails(db: SQLiteDatabase, albumId: number): Promise<AlbumDetails | null> {
 	const album = await db.getFirstAsync<AlbumDetails>(`
 		SELECT
-			album.album_id AS id, album.name, album.description, album.method
+			album.album_id AS id, album.name, album.description
 		FROM album
 		WHERE album.album_id = $id;
 	`, { $id: albumId });
@@ -188,4 +188,18 @@ async function deleteAlbum(db: SQLiteDatabase, albumId: number) {
 	});
 }
 
-export { createTablesIfNeeded, getAlbums, createAlbum, getAlbumDetails, updateAlbumDetails, getAlbumImages, updateImageRankings, updateAlbumRanked, deleteAlbum };
+async function getAlbumRankingDetails(db: SQLiteDatabase, albumId: number): Promise<ReRankAlbum> {
+	const album = await db.getFirstAsync<{ method: string }>("SELECT album.method FROM album WHERE album.album_id = $id;", {  $id: albumId });
+	if (!album) throw new Error("Album not found.");
+	
+	const images = await db.getAllAsync<{ path: string }>(`
+		SELECT path
+		FROM image
+		INNER JOIN album_image ON image.image_id = album_image.image_id
+		WHERE album_image.album_id = $albumId
+	`, { $albumId: albumId });
+		
+	return { method: album.method, images: images.map(img => img.path) };
+}
+
+export { createTablesIfNeeded, getAlbums, createAlbum, getAlbumDetails, updateAlbumDetails, getAlbumImages, updateImageRankings, updateAlbumRanked, deleteAlbum, getAlbumRankingDetails };

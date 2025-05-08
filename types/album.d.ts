@@ -3,7 +3,6 @@ interface AlbumDetails {
 	name: string;
 	description: string;
 	thumbnail: string | null;
-	method: string;
 	imgCount: number;
 }
 
@@ -41,4 +40,9 @@ interface ImageRanking {
 	rank: number;
 }
 
-export type { AlbumDetails, SelectedImage, CreateAlbum, AlbumCreated, UpdateAlbum, AlbumImages, ImageRanking };
+interface ReRankAlbum {
+	images: string[];
+	method: string;
+}
+
+export type { AlbumDetails, SelectedImage, CreateAlbum, AlbumCreated, UpdateAlbum, AlbumImages, ImageRanking, ReRankAlbum };

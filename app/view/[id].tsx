@@ -1,6 +1,6 @@
 import RankCategory from "@/components/RankCategory";
 import type { AlbumImages } from "@/types/album";
-import { getAlbumDetails, getAlbumImages } from "@/utils/db";
+import { getAlbumDetails, getAlbumImages, getAlbumRankingDetails } from "@/utils/db";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
@@ -19,9 +19,6 @@ export default function ViewAlbumPage() {
 	const [imgs, setImgs] = useState<AlbumImages>();
 	const [enlargedImg, setEnlargedImg] = useState<string | null>(null);
 
-	// temp
-	const placeholderImage = require("@/assets/img-placeholder.jpg");
-
 	const fetchAlbum = async () => {
 		const albumDetails = await getAlbumDetails(db, Number.parseInt(id));
 		if (!albumDetails) return;
@@ -36,6 +33,20 @@ export default function ViewAlbumPage() {
 		};
 
 		setImgs(imgs);
+	};
+
+	const handleRankingError = async () => {
+		const albumId = Number.parseInt(id);
+		const albumDetails = await getAlbumRankingDetails(db, albumId);
+
+		router.navigate({
+			pathname: "/rank",
+			params: {
+				albumId: albumId,
+				method: albumDetails.method,
+				images: JSON.stringify(albumDetails.images)
+			}
+		});
 	};
 
 	useEffect(() => {
@@ -62,7 +73,7 @@ export default function ViewAlbumPage() {
 					<Text variant="titleLarge" style={{ marginTop: 8 }}>Ranking is incomplete.</Text>
 					<Button
 						mode="contained-tonal"
-						onPress={() => console.log("go rank")}
+						onPress={handleRankingError}
 						style={{ marginTop: 16 }}
 					>
 						Rank Now
