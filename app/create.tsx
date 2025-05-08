@@ -55,7 +55,7 @@ export default function CreateAlbumPage() {
 			return;
 		}
 
-		const created = await createAlbum(db, { name, description, images });
+		const created = await createAlbum(db, { name, description, images, method });
 		if (!created) {
 			setError(true);
 			return;

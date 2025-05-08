@@ -21,6 +21,7 @@ async function createTablesIfNeeded(db: SQLiteDatabase) {
 				name TEXT NOT NULL,
 				description TEXT NOT NULL,
 				date_ranked TEXT,
+				method TEXT,
 				thumbnail INTEGER,
 				FOREIGN KEY (thumbnail) REFERENCES image(image_id)
 			);
@@ -61,7 +62,7 @@ async function createAlbum(db: SQLiteDatabase, albumDetails: CreateAlbum): Promi
 		const images: string[] = [];
 		
 		await db.withTransactionAsync(async () => {
-			const createdAlbum = await db.runAsync("INSERT INTO album (name, description) VALUES (?, ?)", albumDetails.name, albumDetails.description);
+			const createdAlbum = await db.runAsync("INSERT INTO album (name, description, method) VALUES (?, ?, ?)", albumDetails.name, albumDetails.description, albumDetails.method);
 
 			const checkImgStatement = await db.prepareAsync("SELECT image_id AS imgId, path FROM image WHERE filename = $file");
 			const imgStatement = await db.prepareAsync("INSERT INTO image (path, filename) VALUES ($path, $file)");
@@ -95,7 +96,7 @@ async function createAlbum(db: SQLiteDatabase, albumDetails: CreateAlbum): Promi
 async function getAlbumDetails(db: SQLiteDatabase, albumId: number): Promise<AlbumDetails | null> {
 	const album = await db.getFirstAsync<AlbumDetails>(`
 		SELECT
-			album.album_id AS id, album.name, album.description
+			album.album_id AS id, album.name, album.description, album.method
 		FROM album
 		WHERE album.album_id = $id;
 	`, { $id: albumId });

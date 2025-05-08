@@ -3,6 +3,7 @@ interface AlbumDetails {
 	name: string;
 	description: string;
 	thumbnail: string | null;
+	method: string;
 	imgCount: number;
 }
 
@@ -15,6 +16,7 @@ interface CreateAlbum {
 	name: string;
 	description: string;
 	images: SelectedImages[];
+	method: string;
 }
 
 interface AlbumCreated {
