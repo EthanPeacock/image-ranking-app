@@ -45,4 +45,13 @@ interface ReRankAlbum {
 	method: string;
 }
 
-export type { AlbumDetails, SelectedImage, CreateAlbum, AlbumCreated, UpdateAlbum, AlbumImages, ImageRanking, ReRankAlbum };
+export type {
+	AlbumDetails,
+	SelectedImage,
+	CreateAlbum,
+	AlbumCreated,
+	UpdateAlbum,
+	AlbumImages,
+	ImageRanking,
+	ReRankAlbum
+};

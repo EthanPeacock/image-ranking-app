@@ -38,9 +38,7 @@ export default function CreateAlbumPage() {
 		});
 
 		if (!result.canceled) {
-			const selectedImages = result.assets.map((
-				asset
-			) => ({
+			const selectedImages = result.assets.map((asset) => ({
 				filename: asset.fileName || "unknown",
 				path: asset.uri
 			}));
@@ -160,9 +158,7 @@ export default function CreateAlbumPage() {
 							}}
 						>
 							<View style={{ width: "80%" }}>
-								<Text variant="titleMedium">
-									Image Similarity
-								</Text>
+								<Text variant="titleMedium">Image Similarity</Text>
 								<Text variant="labelLarge" style={{ opacity: 0.5 }}>
 									Best for smaller collections
 								</Text>
@@ -188,9 +184,7 @@ export default function CreateAlbumPage() {
 							}}
 						>
 							<View style={{ width: "80%" }}>
-								<Text variant="titleMedium">
-									Image Date & Time
-								</Text>
+								<Text variant="titleMedium">Image Date & Time</Text>
 								<Text variant="labelLarge" style={{ opacity: 0.5 }}>
 									Best for larger collections
 								</Text>

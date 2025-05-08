@@ -1,4 +1,12 @@
-import type { AlbumCreated, AlbumDetails, AlbumImages, CreateAlbum, ImageRanking, ReRankAlbum, UpdateAlbum } from "@/types/album";
+import type {
+	AlbumCreated,
+	AlbumDetails,
+	AlbumImages,
+	CreateAlbum,
+	ImageRanking,
+	ReRankAlbum,
+	UpdateAlbum
+} from "@/types/album";
 import type { SQLiteDatabase } from "expo-sqlite";
 
 async function createTablesIfNeeded(db: SQLiteDatabase) {
@@ -53,27 +61,46 @@ async function getAlbums(db: SQLiteDatabase): Promise<AlbumDetails[]> {
 		GROUP BY album.album_id;
 	`);
 
-	return albums
+	return albums;
 }
 
-async function createAlbum(db: SQLiteDatabase, albumDetails: CreateAlbum): Promise<AlbumCreated | null> {
+async function createAlbum(
+	db: SQLiteDatabase,
+	albumDetails: CreateAlbum
+): Promise<AlbumCreated | null> {
 	try {
 		let newAlbumId = -1;
 		const images: string[] = [];
-		
-		await db.withTransactionAsync(async () => {
-			const createdAlbum = await db.runAsync("INSERT INTO album (name, description, method) VALUES (?, ?, ?)", albumDetails.name, albumDetails.description, albumDetails.method);
 
-			const checkImgStatement = await db.prepareAsync("SELECT image_id AS imgId, path FROM image WHERE filename = $file");
-			const imgStatement = await db.prepareAsync("INSERT INTO image (path, filename) VALUES ($path, $file)");
-			const albumImgStatement = await db.prepareAsync("INSERT INTO album_image (album_id, image_id) VALUES ($albumId, $imageId)");
+		await db.withTransactionAsync(async () => {
+			const createdAlbum = await db.runAsync(
+				"INSERT INTO album (name, description, method) VALUES (?, ?, ?)",
+				albumDetails.name,
+				albumDetails.description,
+				albumDetails.method
+			);
+
+			const checkImgStatement = await db.prepareAsync(
+				"SELECT image_id AS imgId, path FROM image WHERE filename = $file"
+			);
+			const imgStatement = await db.prepareAsync(
+				"INSERT INTO image (path, filename) VALUES ($path, $file)"
+			);
+			const albumImgStatement = await db.prepareAsync(
+				"INSERT INTO album_image (album_id, image_id) VALUES ($albumId, $imageId)"
+			);
 
 			for (const currImg of albumDetails.images) {
 				let imgId: number;
-				const img = await checkImgStatement.executeAsync<{ imgId: number, path: string }>({ $file: currImg.filename });
+				const img = await checkImgStatement.executeAsync<{ imgId: number; path: string }>({
+					$file: currImg.filename
+				});
 				const imgExists = await img.getFirstAsync();
 				if (!imgExists) {
-					const createdImg = await imgStatement.executeAsync({ $path: currImg.path, $file: currImg.filename });
+					const createdImg = await imgStatement.executeAsync({
+						$path: currImg.path,
+						$file: currImg.filename
+					});
 					imgId = createdImg.lastInsertRowId;
 					images.push(currImg.path);
 				} else {
@@ -81,7 +108,10 @@ async function createAlbum(db: SQLiteDatabase, albumDetails: CreateAlbum): Promi
 					images.push(imgExists.path);
 				}
 
-				await albumImgStatement.executeAsync({ $albumId: createdAlbum.lastInsertRowId, $imageId: imgId });
+				await albumImgStatement.executeAsync({
+					$albumId: createdAlbum.lastInsertRowId,
+					$imageId: imgId
+				});
 			}
 
 			newAlbumId = createdAlbum.lastInsertRowId;
@@ -94,12 +124,15 @@ async function createAlbum(db: SQLiteDatabase, albumDetails: CreateAlbum): Promi
 }
 
 async function getAlbumDetails(db: SQLiteDatabase, albumId: number): Promise<AlbumDetails | null> {
-	const album = await db.getFirstAsync<AlbumDetails>(`
+	const album = await db.getFirstAsync<AlbumDetails>(
+		`
 		SELECT
 			album.album_id AS id, album.name, album.description
 		FROM album
 		WHERE album.album_id = $id;
-	`, { $id: albumId });
+	`,
+		{ $id: albumId }
+	);
 
 	return album;
 }
@@ -119,28 +152,41 @@ async function updateAlbumDetails(db: SQLiteDatabase, details: UpdateAlbum): Pro
 }
 
 async function getAlbumImages(db: SQLiteDatabase, albumId: number): Promise<AlbumImages> {
-	const rank1Imgs = await db.getAllAsync<{ path: string }>(`
+	const rank1Imgs = await db.getAllAsync<{ path: string }>(
+		`
 		SELECT path
 		FROM image
 		INNER JOIN album_image ON image.image_id = album_image.image_id
 		WHERE album_image.album_id = $albumId AND album_image.rank = 1
-	`, { $albumId: albumId });
+	`,
+		{ $albumId: albumId }
+	);
 
-	const rank2Imgs = await db.getAllAsync<{ path: string }>(`
+	const rank2Imgs = await db.getAllAsync<{ path: string }>(
+		`
 		SELECT path
 		FROM image
 		INNER JOIN album_image ON image.image_id = album_image.image_id
 		WHERE album_image.album_id = $albumId AND album_image.rank = 2
-	`, { $albumId: albumId });
+	`,
+		{ $albumId: albumId }
+	);
 
-	const rank3Imgs = await db.getAllAsync<{ path: string }>(`
+	const rank3Imgs = await db.getAllAsync<{ path: string }>(
+		`
 		SELECT path
 		FROM image
 		INNER JOIN album_image ON image.image_id = album_image.image_id
 		WHERE album_image.album_id = $albumId AND album_image.rank = 3
-	`, { $albumId: albumId });
+	`,
+		{ $albumId: albumId }
+	);
 
-	return { Rank1: rank1Imgs.map(img => img.path), Rank2: rank2Imgs.map(img => img.path), Rank3: rank3Imgs.map(img => img.path) };
+	return {
+		Rank1: rank1Imgs.map((img) => img.path),
+		Rank2: rank2Imgs.map((img) => img.path),
+		Rank3: rank3Imgs.map((img) => img.path)
+	};
 }
 
 async function updateImageRankings(db: SQLiteDatabase, albumId: number, rankings: ImageRanking[]) {
@@ -155,7 +201,7 @@ async function updateImageRankings(db: SQLiteDatabase, albumId: number, rankings
 				WHERE path = $path
 			);
 	`);
-	
+
 	await db.withTransactionAsync(async () => {
 		for (const ranking of rankings) {
 			await statement.executeAsync({ $rank: ranking.rank, $albumId: albumId, $path: ranking.path });
@@ -166,11 +212,14 @@ async function updateImageRankings(db: SQLiteDatabase, albumId: number, rankings
 async function updateAlbumRanked(db: SQLiteDatabase, albumId: number, thumbnail: string) {
 	const date = new Date().toISOString().slice(0, 10);
 
-	const thumbnailImage = await db.getFirstAsync<{ imgId: number }>(`
+	const thumbnailImage = await db.getFirstAsync<{ imgId: number }>(
+		`
 		SELECT image_id as imgId
 		FROM image
 		WHERE path = $path
-	`, { $path: thumbnail });
+	`,
+		{ $path: thumbnail }
+	);
 
 	if (!thumbnailImage) throw new Error("Invalid thumbnail.");
 
@@ -189,17 +238,34 @@ async function deleteAlbum(db: SQLiteDatabase, albumId: number) {
 }
 
 async function getAlbumRankingDetails(db: SQLiteDatabase, albumId: number): Promise<ReRankAlbum> {
-	const album = await db.getFirstAsync<{ method: string }>("SELECT album.method FROM album WHERE album.album_id = $id;", {  $id: albumId });
+	const album = await db.getFirstAsync<{ method: string }>(
+		"SELECT album.method FROM album WHERE album.album_id = $id;",
+		{ $id: albumId }
+	);
 	if (!album) throw new Error("Album not found.");
-	
-	const images = await db.getAllAsync<{ path: string }>(`
+
+	const images = await db.getAllAsync<{ path: string }>(
+		`
 		SELECT path
 		FROM image
 		INNER JOIN album_image ON image.image_id = album_image.image_id
 		WHERE album_image.album_id = $albumId
-	`, { $albumId: albumId });
-		
-	return { method: album.method, images: images.map(img => img.path) };
+	`,
+		{ $albumId: albumId }
+	);
+
+	return { method: album.method, images: images.map((img) => img.path) };
 }
 
-export { createTablesIfNeeded, getAlbums, createAlbum, getAlbumDetails, updateAlbumDetails, getAlbumImages, updateImageRankings, updateAlbumRanked, deleteAlbum, getAlbumRankingDetails };
+export {
+	createTablesIfNeeded,
+	getAlbums,
+	createAlbum,
+	getAlbumDetails,
+	updateAlbumDetails,
+	getAlbumImages,
+	updateImageRankings,
+	updateAlbumRanked,
+	deleteAlbum,
+	getAlbumRankingDetails
+};

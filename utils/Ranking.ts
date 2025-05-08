@@ -7,7 +7,7 @@ export default class Ranking {
 	private compareScoreChange = 1; // the amount to change the compared images score by
 
 	private scores: RankingScores = {};
-	
+
 	// round 1 image piles
 	// this is used to generate the round 2 triplets
 	private neutralImages: string[][] = [];
@@ -52,9 +52,9 @@ export default class Ranking {
 			const targetImg = triplet[0];
 			const comparedImgs = triplet.slice(1);
 
-			let newCompareImgs: string[]
+			let newCompareImgs: string[];
 			const neutralOptions = this.neutralImages.filter(
-				imgs => JSON.stringify(imgs) !== JSON.stringify(comparedImgs)
+				(imgs) => JSON.stringify(imgs) !== JSON.stringify(comparedImgs)
 			);
 
 			if (neutralOptions.length === 0) {
@@ -71,7 +71,7 @@ export default class Ranking {
 			} else {
 				const randomIndex = Math.floor(Math.random() * neutralOptions.length);
 				newCompareImgs = neutralOptions[randomIndex];
-				
+
 				// remove from this.neutralImages
 				this.neutralImages.splice(this.neutralImages.indexOf(newCompareImgs), 1);
 			}
@@ -85,7 +85,7 @@ export default class Ranking {
 	public categoriseImages(): ImageRanking[] {
 		const sortedScores = Object.entries(this.scores).sort((img1, img2) => img1[1] - img2[1]);
 		this.sortedScores = sortedScores;
-		
+
 		const categorisedScores = this.splitScoresArray(sortedScores);
 
 		const imageRankings: ImageRanking[] = [];

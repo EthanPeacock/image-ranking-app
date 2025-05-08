@@ -22,15 +22,15 @@ export default function ViewAlbumPage() {
 	const fetchAlbum = async () => {
 		const albumDetails = await getAlbumDetails(db, Number.parseInt(id));
 		if (!albumDetails) return;
-		
+
 		setName(albumDetails.name);
-		
+
 		const imgs = await getAlbumImages(db, Number.parseInt(id));
 		if (!imgs) return;
 		if (imgs.Rank1.length === 0 && imgs.Rank2.length === 0 && imgs.Rank3.length === 0) {
 			setRankingError(true);
 			return;
-		};
+		}
 
 		setImgs(imgs);
 	};
@@ -70,12 +70,10 @@ export default function ViewAlbumPage() {
 			{rankingError && (
 				<View style={{ alignItems: "center", justifyContent: "center", marginTop: -50 }}>
 					<MaterialIcons name="error-outline" size={72} color="black" />
-					<Text variant="titleLarge" style={{ marginTop: 8 }}>Ranking is incomplete.</Text>
-					<Button
-						mode="contained-tonal"
-						onPress={handleRankingError}
-						style={{ marginTop: 16 }}
-					>
+					<Text variant="titleLarge" style={{ marginTop: 8 }}>
+						Ranking is incomplete.
+					</Text>
+					<Button mode="contained-tonal" onPress={handleRankingError} style={{ marginTop: 16 }}>
 						Rank Now
 					</Button>
 				</View>
@@ -87,15 +85,25 @@ export default function ViewAlbumPage() {
 						options={{
 							title: name || "Loading...",
 							headerRight: () => (
-								<IconButton icon="pencil" size={24} onPress={() => router.navigate(`/manage/${id}`)} />
+								<IconButton
+									icon="pencil"
+									size={24}
+									onPress={() => router.navigate(`/manage/${id}`)}
+								/>
 							)
 						}}
 					/>
 
-					
 					<View style={{ marginBottom: 24 }}>
 						<RankCategory stars={3} />
-						<View style={{ width: "100%", flexDirection: "row", flexWrap: "wrap", justifyContent: "center" }}>
+						<View
+							style={{
+								width: "100%",
+								flexDirection: "row",
+								flexWrap: "wrap",
+								justifyContent: "center"
+							}}
+						>
 							{imgs?.Rank3.map((img) => (
 								<View key={img} style={{ width: "33.3%", padding: 8 }}>
 									<TouchableOpacity onPress={() => setEnlargedImg(img)}>
@@ -112,7 +120,14 @@ export default function ViewAlbumPage() {
 
 					<View style={{ marginBottom: 24 }}>
 						<RankCategory stars={2} />
-						<View style={{ width: "100%", flexDirection: "row", flexWrap: "wrap", justifyContent: "center" }}>
+						<View
+							style={{
+								width: "100%",
+								flexDirection: "row",
+								flexWrap: "wrap",
+								justifyContent: "center"
+							}}
+						>
 							{imgs?.Rank2.map((img) => (
 								<View key={img} style={{ width: "33.3%", padding: 8 }}>
 									<TouchableOpacity onPress={() => setEnlargedImg(img)}>
@@ -129,7 +144,14 @@ export default function ViewAlbumPage() {
 
 					<View style={{ marginBottom: 48 }}>
 						<RankCategory stars={1} />
-						<View style={{ width: "100%", flexDirection: "row", flexWrap: "wrap", justifyContent: "center" }}>
+						<View
+							style={{
+								width: "100%",
+								flexDirection: "row",
+								flexWrap: "wrap",
+								justifyContent: "center"
+							}}
+						>
 							{imgs?.Rank1.map((img) => (
 								<View key={img} style={{ width: "33.3%", padding: 8 }}>
 									<TouchableOpacity onPress={() => setEnlargedImg(img)}>
@@ -146,7 +168,7 @@ export default function ViewAlbumPage() {
 				</ScrollView>
 			)}
 
-			{enlargedImg !== null &&
+			{enlargedImg !== null && (
 				<Portal>
 					<Modal visible={true} dismissable={true} onDismiss={() => setEnlargedImg(null)}>
 						<View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
@@ -158,7 +180,7 @@ export default function ViewAlbumPage() {
 						</View>
 					</Modal>
 				</Portal>
-			}
+			)}
 		</SafeAreaView>
 	);
 }

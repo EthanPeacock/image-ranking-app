@@ -38,7 +38,7 @@ export default function ManageAlbumPage() {
 
 	const fetchAlbum = async () => {
 		const albumDetails = await getAlbumDetails(db, Number.parseInt(id));
-		
+
 		if (!albumDetails) {
 			return;
 		}
@@ -48,21 +48,17 @@ export default function ManageAlbumPage() {
 	};
 
 	const handleDeletePress = () => {
-		Alert.alert(
-			"Delete Album",
-			"Are you sure you want to delete this album?",
-			[
-				{
-					text: "Cancel",
-					style: "cancel"
-				},
-				{
-					text: "Delete",
-					style: "destructive",
-					onPress: handleDelete
-				}
-			]
-		)
+		Alert.alert("Delete Album", "Are you sure you want to delete this album?", [
+			{
+				text: "Cancel",
+				style: "cancel"
+			},
+			{
+				text: "Delete",
+				style: "destructive",
+				onPress: handleDelete
+			}
+		]);
 	};
 
 	const handleDelete = async () => {
@@ -73,16 +69,14 @@ export default function ManageAlbumPage() {
 
 	useEffect(() => {
 		fetchAlbum();
-	}, [])
+	}, []);
 
 	return (
 		<View style={{ padding: 24, flex: 1 }}>
 			<Stack.Screen
 				options={{
 					title: "Manage Album",
-					headerRight: () => (
-						<IconButton icon="delete" size={24} onPress={handleDeletePress} />
-					)
+					headerRight: () => <IconButton icon="delete" size={24} onPress={handleDeletePress} />
 				}}
 			/>
 

@@ -1,1 +1,1 @@
-export { default } from './src/TripletGenerationModule';
+export { default } from "./src/TripletGenerationModule";

@@ -1,9 +1,9 @@
 {
-  "platforms": ["android"],
-  "apple": {
-    "modules": ["TripletGenerationModule"]
-  },
-  "android": {
-    "modules": ["expo.modules.tripletgeneration.TripletGenerationModule"]
-  }
+	"platforms": ["android"],
+	"apple": {
+		"modules": ["TripletGenerationModule"]
+	},
+	"android": {
+		"modules": ["expo.modules.tripletgeneration.TripletGenerationModule"]
+	}
 }

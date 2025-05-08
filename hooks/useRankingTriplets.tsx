@@ -8,11 +8,11 @@ import { useEffect, useRef, useState } from "react";
 export default function useRankingTriplets(albumId: number, images: string[], method: string) {
 	const db = useSQLiteContext();
 	const router = useRouter();
-	
+
 	const [loading, setLoading] = useState<boolean>(true);
 	const [swiped, setSwiped] = useState<boolean>(false);
 	const [currTriplet, setCurrTriplet] = useState<number>(0);
-	
+
 	const triplets = useRef<string[][]>([]);
 	const round = useRef<0 | 1 | 2>(0);
 	const ranking = useRef<Ranking | null>(null);
@@ -36,19 +36,21 @@ export default function useRankingTriplets(albumId: number, images: string[], me
 	};
 
 	const getRound2Triplets = async () => {
-		if (!ranking.current) throw new Error("The ranking instance is null, cannot generate round 2 triplets");
+		if (!ranking.current)
+			throw new Error("The ranking instance is null, cannot generate round 2 triplets");
 
 		ranking.current.setRound2();
 		const newTriplets = await ranking.current.generateRound2Triplets(triplets.current);
 		triplets.current = newTriplets;
-		
+
 		round.current = 2;
 		setCurrTriplet(0);
 		setLoading(false);
 	};
 
 	const updateAlbumRankings = async () => {
-		if (!ranking.current) throw new Error("The ranking instance is null, cannot update album rankings");
+		if (!ranking.current)
+			throw new Error("The ranking instance is null, cannot update album rankings");
 
 		const rankedImages = ranking.current.categoriseImages();
 		await updateImageRankings(db, albumId, rankedImages);

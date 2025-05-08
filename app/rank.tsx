@@ -18,7 +18,7 @@ type RankScreenParams = {
 	albumId: string;
 	method: "similarity" | "metadata";
 	images: string;
-}
+};
 
 type IconNames = "thumbs-o-up" | "thumbs-o-down" | "thumbs-up" | "thumbs-down";
 
@@ -206,13 +206,9 @@ export default function RankingPage() {
 				</View>
 			</View>
 
-			{enlargeImg !== null &&
+			{enlargeImg !== null && (
 				<Portal>
-					<Modal
-						visible={true}
-						dismissable={true}
-						onDismiss={() => setEnlargeImg(null)}
-					>
+					<Modal visible={true} dismissable={true} onDismiss={() => setEnlargeImg(null)}>
 						<View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
 							<Image
 								source={swiped ? placeholderImage : { uri: enlargeImg }}
@@ -222,7 +218,7 @@ export default function RankingPage() {
 						</View>
 					</Modal>
 				</Portal>
-			}
+			)}
 		</GestureHandlerRootView>
 	);
 }
