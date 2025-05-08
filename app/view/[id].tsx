@@ -39,7 +39,7 @@ export default function ViewAlbumPage() {
 		const albumId = Number.parseInt(id);
 		const albumDetails = await getAlbumRankingDetails(db, albumId);
 
-		router.navigate({
+		router.replace({
 			pathname: "/rank",
 			params: {
 				albumId: albumId,
@@ -95,7 +95,7 @@ export default function ViewAlbumPage() {
 					
 					<View style={{ marginBottom: 24 }}>
 						<RankCategory stars={3} />
-						<View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "center" }}>
+						<View style={{ width: "100%", flexDirection: "row", flexWrap: "wrap", justifyContent: "center" }}>
 							{imgs?.Rank3.map((img) => (
 								<View key={img} style={{ width: "33.3%", padding: 8 }}>
 									<TouchableOpacity onPress={() => setEnlargedImg(img)}>
@@ -112,7 +112,7 @@ export default function ViewAlbumPage() {
 
 					<View style={{ marginBottom: 24 }}>
 						<RankCategory stars={2} />
-						<View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "center" }}>
+						<View style={{ width: "100%", flexDirection: "row", flexWrap: "wrap", justifyContent: "center" }}>
 							{imgs?.Rank2.map((img) => (
 								<View key={img} style={{ width: "33.3%", padding: 8 }}>
 									<TouchableOpacity onPress={() => setEnlargedImg(img)}>
@@ -129,7 +129,7 @@ export default function ViewAlbumPage() {
 
 					<View style={{ marginBottom: 48 }}>
 						<RankCategory stars={1} />
-						<View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "center" }}>
+						<View style={{ width: "100%", flexDirection: "row", flexWrap: "wrap", justifyContent: "center" }}>
 							{imgs?.Rank1.map((img) => (
 								<View key={img} style={{ width: "33.3%", padding: 8 }}>
 									<TouchableOpacity onPress={() => setEnlargedImg(img)}>
