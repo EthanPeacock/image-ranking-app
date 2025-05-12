@@ -23,8 +23,7 @@ export default function RootLayout() {
 				<SQLiteProvider databaseName="albums.db" onInit={createTablesIfNeeded} useSuspense>
 					<Stack
 						screenOptions={{
-							headerTitleAlign: "center",
-							headerLargeTitle: true
+							headerTitleAlign: "center"
 						}}
 					>
 						<Stack.Screen name="index" />
