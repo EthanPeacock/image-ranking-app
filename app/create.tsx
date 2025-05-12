@@ -48,7 +48,7 @@ export default function CreateAlbumPage() {
 	};
 
 	const handleSubmit = async () => {
-		if (!name || !description || images.length === 0) {
+		if (!name || !description || images.length < 6) {
 			setError(true);
 			return;
 		}
@@ -122,9 +122,14 @@ export default function CreateAlbumPage() {
 							<Entypo name="images" size={42} color="gray" />
 							<View style={{ marginLeft: 24 }}>
 								<Text variant="titleLarge">Select Images</Text>
-								<Text variant="titleMedium">
-									{images.length === 0 ? "None Selected" : `${images.length} Selected`}
-								</Text>
+								<View style={{ flexDirection: "row", gap: 15 }}>
+									<Text variant="titleMedium">
+										{images.length === 0 ? "None Selected" : `${images.length} Selected`}
+									</Text>
+									<Text variant="titleMedium" style={{ opacity: 0.5 }}>
+										Minimum: 6
+									</Text>
+								</View>
 							</View>
 						</View>
 					</TouchableRipple>
