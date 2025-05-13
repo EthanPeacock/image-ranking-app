@@ -131,7 +131,7 @@ export default function RankingPage() {
 		<GestureHandlerRootView>
 			<View style={{ padding: 24, flex: 1, alignItems: "center" }}>
 				<Stack.Screen
-					options={{ headerShown: true, title: "Rank Images", headerBackVisible: false }}
+					options={{ headerShown: true, title: "Rank Images", headerTitleAlign: "center", headerBackVisible: false }}
 				/>
 
 				<View

@@ -21,11 +21,7 @@ export default function RootLayout() {
 		<PaperProvider theme={DefaultTheme}>
 			<Suspense fallback={<Text>Loading...</Text>}>
 				<SQLiteProvider databaseName="albums.db" onInit={createTablesIfNeeded} useSuspense>
-					<Stack
-						screenOptions={{
-							headerTitleAlign: "center"
-						}}
-					>
+					<Stack>
 						<Stack.Screen name="index" />
 						<Stack.Screen name="view/[id]" />
 						<Stack.Screen name="manage/[id]" />

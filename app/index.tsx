@@ -32,7 +32,7 @@ export default function MyAlbumsPage() {
 			style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
 			edges={["left", "right", "bottom"]}
 		>
-			<Stack.Screen options={{ title: "My Albums" }} />
+			<Stack.Screen options={{ title: "My Albums", headerTitleAlign: "center" }} />
 
 			{albums.length === 0 && <NoAlbums />}
 			{albums.length > 0 && (

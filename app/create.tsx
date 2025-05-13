@@ -72,7 +72,7 @@ export default function CreateAlbumPage() {
 
 	return (
 		<View style={{ padding: 24, flex: 1 }}>
-			<Stack.Screen options={{ title: "Create Album" }} />
+			<Stack.Screen options={{ title: "Create Album", headerTitleAlign: "center" }} />
 
 			{error && <ErrorPopup message="Ensure all fields are provided." />}
 
@@ -122,7 +122,7 @@ export default function CreateAlbumPage() {
 							<Entypo name="images" size={42} color="gray" />
 							<View style={{ marginLeft: 24 }}>
 								<Text variant="titleLarge">Select Images</Text>
-								<View style={{ flexDirection: "row", gap: 15 }}>
+								<View style={{ flexDirection: "row", gap: 10 }}>
 									<Text variant="titleMedium">
 										{images.length === 0 ? "None Selected" : `${images.length} Selected`}
 									</Text>

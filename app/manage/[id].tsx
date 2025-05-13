@@ -76,6 +76,7 @@ export default function ManageAlbumPage() {
 			<Stack.Screen
 				options={{
 					title: "Manage Album",
+					headerTitleAlign: "center",
 					headerRight: () => <IconButton icon="delete" size={24} onPress={handleDeletePress} />
 				}}
 			/>

@@ -61,6 +61,7 @@ export default function ViewAlbumPage() {
 			<Stack.Screen
 				options={{
 					title: name || "Loading...",
+					headerTitleAlign: "center",
 					headerRight: () => (
 						<IconButton icon="pencil" size={24} onPress={() => router.navigate(`/manage/${id}`)} />
 					)
